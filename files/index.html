@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Café Cumbre - Pedidos en línea</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca"><span class="marca-simbolo" aria-hidden="true"></span>
+    <div><h1 id="titulo-sitio">Café Cumbre</h1><p>Sitio de práctica para pruebas de software</p></div></div>
+  <div class="sesion">
+    <label class="opcion-linea"><input type="checkbox" id="modo-sin-conexion"> Simular sin conexión</label>
+    <span id="usuario-activo" hidden></span><span id="sesion-restante" class="metrica" hidden></span>
+    <button type="button" id="btn-salir" class="boton-secundario" hidden>Cerrar sesión</button>
+  </div>
+</header>
+<nav class="menu" aria-label="Secciones">
+  <button type="button" id="nav-ingreso" data-v="ingreso" class="activo">Ingreso</button>
+  <button type="button" id="nav-menu" data-v="menu">Menú</button>
+  <button type="button" id="nav-carrito" data-v="carrito" disabled>Carrito (<span id="carrito-cuenta">0</span>)</button>
+  <button type="button" id="nav-seguimiento" data-v="seguimiento">Seguimiento</button>
+  <button type="button" id="nav-admin" data-v="admin" disabled>Administración</button>
+</nav>
+<main>
+<section id="vista-ingreso" class="vista">
+  <h2>Ingresa a tu cuenta</h2>
+  <p class="ayuda">Cliente: <strong>cliente01</strong> / <strong>Cliente2026!</strong>. Barista: <strong>barista01</strong> / <strong>Barista2026!</strong></p>
+  <form id="form-login" novalidate>
+    <div class="campo"><label for="login-usuario">Usuario</label><input type="text" id="login-usuario" autocomplete="off"><p class="error" id="e-login-usuario" role="alert"></p></div>
+    <div class="campo"><label for="login-clave">Contraseña</label><input type="password" id="login-clave" autocomplete="off"><p class="error" id="e-login-clave" role="alert"></p></div>
+    <p class="error" id="login-error" role="alert"></p>
+    <button type="submit" id="btn-ingresar" class="boton-principal">Ingresar</button>
+  </form>
+</section>
+<section id="vista-menu" class="vista" hidden>
+  <h2>Menú</h2>
+  <div class="barra-herramientas">
+    <div class="campo"><label for="filtro-menu">Buscar producto</label><input type="text" id="filtro-menu" autocomplete="off"><p class="error" id="e-filtro-menu" role="alert"></p></div>
+    <div class="campo"><label for="filtro-cat">Categoría</label><select id="filtro-cat"><option value="">Todas</option><option>Café caliente</option><option>Café frío</option><option>Panadería</option></select></div>
+  </div>
+  <p class="mensaje" id="msg-menu" role="status" aria-live="polite"></p>
+  <div id="lista-menu" class="tarjetas"></div>
+</section>
+<section id="vista-carrito" class="vista" hidden>
+  <h2>Tu carrito</h2>
+  <div class="tabla-contenedor"><table><thead><tr><th>Producto</th><th>Cant.</th><th>Subtotal</th><th>Acciones</th></tr></thead><tbody id="cuerpo-carrito"></tbody></table></div>
+  <p id="carrito-vacio" class="ayuda">El carrito está vacío.</p>
+  <div class="barra-herramientas">
+    <div class="campo"><label for="cupon">Cupón</label><input type="text" id="cupon" placeholder="CAFE10" autocomplete="off"></div>
+    <button type="button" id="btn-cupon" class="boton-secundario">Aplicar</button>
+    <button type="button" id="btn-vaciar" class="boton-secundario">Vaciar carrito</button>
+  </div>
+  <p class="mensaje" id="msg-cupon" role="status" aria-live="polite"></p>
+  <p>Subtotal: <strong id="subtotal">$0</strong> | Descuento: <strong id="descuento">$0</strong> | Total: <strong id="total">$0</strong></p>
+  <h3>Datos del pedido</h3>
+  <form id="form-pedido" novalidate>
+    <div class="rejilla">
+      <div class="campo"><label for="f-nombre">Nombre</label><input type="text" id="f-nombre" autocomplete="off"><p class="error" id="e-f-nombre" role="alert"></p></div>
+      <div class="campo"><label for="f-tel">Teléfono celular</label><input type="text" id="f-tel" inputmode="numeric" autocomplete="off"><p class="error" id="e-f-tel" role="alert"></p></div>
+      <div class="campo"><label for="f-sede">Sede de recogida</label><select id="f-sede"><option value="">Selecciona una sede</option><option>Centro</option><option>Norte</option><option>Sur</option></select><p class="error" id="e-f-sede" role="alert"></p></div>
+      <div class="campo"><label for="f-pago">Método de pago</label><select id="f-pago"><option value="">Selecciona un método</option><option>Efectivo</option><option>Tarjeta</option></select><p class="error" id="e-f-pago" role="alert"></p></div>
+    </div>
+    <div class="campo"><label for="f-notas">Notas (opcional)</label><textarea id="f-notas" rows="2" maxlength="120"></textarea></div>
+    <p class="mensaje" id="msg-pedido" role="status" aria-live="polite"></p>
+    <button type="submit" id="btn-confirmar" class="boton-principal">Confirmar pedido</button>
+  </form>
+</section>
+<section id="vista-seguimiento" class="vista" hidden>
+  <h2>Seguimiento de pedido</h2>
+  <p class="ayuda">Escribe el código de tu pedido (por ejemplo, PED-0001).</p>
+  <form id="form-seg" novalidate>
+    <div class="campo"><label for="s-codigo">Código de pedido</label><input type="text" id="s-codigo" placeholder="PED-0001" autocomplete="off"><p class="error" id="e-s-codigo" role="alert"></p></div>
+    <button type="submit" id="btn-buscar" class="boton-principal">Consultar</button>
+  </form>
+  <p id="cargando" class="cargando" hidden>Buscando…</p>
+  <p class="mensaje" id="msg-seg" role="status" aria-live="polite"></p>
+  <article id="seg-panel" class="resultado" hidden><h3 id="s-titulo"></h3>
+    <dl><dt>Cliente</dt><dd id="s-nombre"></dd><dt>Teléfono</dt><dd id="s-tel"></dd><dt>Productos</dt><dd id="s-items"></dd><dt>Total</dt><dd id="s-total"></dd><dt>Estado</dt><dd id="s-estado"></dd></dl></article>
+</section>
+<section id="vista-admin" class="vista" hidden>
+  <h2>Administración de pedidos</h2>
+  <p class="mensaje fallo" id="admin-denegado" role="alert" hidden>Acceso denegado: esta sección es solo para baristas.</p>
+  <div id="admin-contenido" hidden>
+    <div class="contadores"><div><strong id="a-total">0</strong>Pedidos</div><div><strong id="a-recibido">0</strong>Recibidos</div><div><strong id="a-prep">0</strong>En preparación</div><div><strong id="a-listo">0</strong>Listos</div></div>
+    <div class="barra-herramientas">
+      <div class="campo"><label for="filtro-ped">Filtrar por código</label><input type="text" id="filtro-ped" placeholder="PED-0001" autocomplete="off"><p class="error" id="e-filtro-ped" role="alert"></p></div>
+      <button type="button" id="btn-exportar" class="boton-secundario">Exportar CSV</button>
+      <button type="button" id="btn-reiniciar" class="boton-secundario">Restablecer datos</button>
+    </div>
+    <p class="mensaje" id="msg-admin" role="status" aria-live="polite"></p>
+    <div class="tabla-contenedor"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Sede</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="cuerpo-admin"></tbody></table></div>
+  </div>
+</section>
+</main>
+<footer class="pie"><p>Datos ficticios para el curso Calidad de Software. Carga inicial: <span id="carga-ms">0</span> ms</p></footer>
+<script src="app.js"></script>
+</body></html>
